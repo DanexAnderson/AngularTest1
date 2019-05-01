@@ -8,7 +8,7 @@
           <div *ngIf="f.title.errors.required">Title is required</div>
         </div>
       </div>
-  
+
       <div class="form-group">
         <label>Description:</label>
         <input type="text" formControlName="description" placeholder="Description" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.description.errors }">
@@ -16,7 +16,7 @@
           <div *ngIf="f.description.errors.required">Description is required</div>
         </div>
       </div>
-  
+
       <div class="form-group">
         <label>Price ($):</label>
         <input type="text" formControlName="price" placeholder="Price" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.price.errors }">
@@ -32,7 +32,7 @@
             <div *ngIf="f.company.errors.required">Company is required</div>
           </div>
       </div>
-  
+
       <button type="submit"  class="btn btn-info">Save</button>
     </form>
   </div>

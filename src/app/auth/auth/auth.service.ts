@@ -17,9 +17,11 @@ export class AuthService {
   private tokenTimer: any;
   private userId: string;
   private jwt = '';
+
+  private isadmin = false;
   private authStatusLister = new Subject<boolean>();
   private namesListner = new Subject<string>();
-
+  fname = '';
 
 
   constructor(private http: HttpClient, private router: Router) { }
@@ -28,8 +30,12 @@ export class AuthService {
     return this.jwt;
   }
 
+  getIsAdmin() {
+    return this.isadmin;
+  }
+
   getNames() {
-    return this.userData.firstName;
+    return this.fname;
   }
 
    getNamesSubs() {
@@ -68,20 +74,21 @@ export class AuthService {
     clearTimeout(this.tokenTimer);
     this.clearAuthData();
     this.userId = null;
-    this.router.navigate(['/home']);
+    this.router.navigate(['/']);
   }
 
   loginUser(user: AuthData) {
 
     this.http.post<{jwt: string, expiresIn: number, userId: string, firstName: string, isadmin: boolean }>
-    (BASE_URL + 'login', user)
+    (BASE_URL + 'signin', user)
     .subscribe(response => {
        this.jwt = response.jwt;
-      this.userData.firstName = response.firstName;
-      this.userData.isadmin = response.isadmin;
+
+       this.fname = response.firstName;
+       this.isadmin = response.isadmin;
 
       if (response.jwt) {
-        this.namesListner.next(response.firstName);
+        this.namesListner.next(this.fname);
         const expiresInDuration = response.expiresIn;
         this.setAuthTimer(expiresInDuration);
         this.isAuth = true;
@@ -90,9 +97,9 @@ export class AuthService {
         this.authStatusLister.next(true);
         const now = new Date();
         const expirationDate = new Date (now .getTime() + expiresInDuration * 1000);
-        this.saveAuthData(response.jwt, expirationDate, this.userId, response.firstName);
+        this.saveAuthData(response.jwt, expirationDate, this.userId, this.fname);
 
-         this.router.navigate(['/home']);
+         this.router.navigate(['/']);
 
 
       }
@@ -116,13 +123,14 @@ export class AuthService {
     const now = new Date();
     const expiresIn = authInfo.expirationDate.getTime() - now.getTime();
     if (expiresIn > 0) {
-      this.token = authInfo.token;
+      this.jwt = authInfo.token;
       this.isAuth = true;
       this.userId = authInfo.userId;
       this.setAuthTimer(expiresIn / 1000);
       this.authStatusLister.next(true);
-      this.Fname = authInfo.names;
-      // this.namesListner.next(authInfo.names);
+      this.fname = authInfo.fname;
+      this.namesListner.next(this.fname);
+
     }
   }
 
@@ -137,21 +145,21 @@ export class AuthService {
     const token = localStorage.getItem('token');
     const expirationDate = localStorage.getItem('expiration');
     const userId = localStorage.getItem('userId');
-    const names = localStorage.getItem('names');
+    const fname = localStorage.getItem('fname');
     if ( !token || !expirationDate) {
 
       return;
     }
 
-    return { token: token, expirationDate: new Date(expirationDate), userId: userId, names: names };
+    return { token: token, expirationDate: new Date(expirationDate), userId: userId, fname: fname };
   }
 
-  private saveAuthData(token: string, expirationDate: Date, userId: string, names: string) {
+  private saveAuthData(token: string, expirationDate: Date, userId: string, fname: string) {
 
     localStorage.setItem('token', token);
     localStorage.setItem('expiration', expirationDate.toISOString());
     localStorage.setItem('userId', userId);
-    localStorage.setItem('names', names);
+    localStorage.setItem('fname', fname);
   }
 
   private clearAuthData() {
@@ -159,6 +167,6 @@ export class AuthService {
     localStorage.removeItem('token');
     localStorage.removeItem('expiration');
     localStorage.removeItem('userId');
-    localStorage.removeItem('names');
+    localStorage.removeItem('fname');
   }
 }

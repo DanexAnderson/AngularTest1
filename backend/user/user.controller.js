@@ -8,8 +8,8 @@ exports.createUser = (req, res)=>{
   bcrypt.hash(req.body.password, 10).then(hash =>{
 
     const user = new User({
-    firstname: req.body.firstname,
-    lastname: req.body.lastname,
+    firstname: req.body.firstName,
+    lastname: req.body.lastName,
     email: req.body.email,
     isadmin: req.body.isadmin,
     password: hash
@@ -32,6 +32,7 @@ exports.createUser = (req, res)=>{
 exports.userSignin = (req, res, next) => {
 
   let fetchedUser;
+
 
   User.findOne({ email: req.body.email })
   .then(user => {
@@ -59,7 +60,7 @@ exports.userSignin = (req, res, next) => {
         jwt: token,
         expiresIn: 3600,
         userId: fetchedUser._id,
-        firstname: fetchedUser.firstname,
+        firstName: fetchedUser.firstname,
         isadmin: fetchedUser.isadmin
       });
 

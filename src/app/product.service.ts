@@ -15,23 +15,23 @@ export class ProductService {
 
 
 
-  getAllProducts(){
+  getAllProducts() {
     return this.http.get<ProductModel[]>(BASE_URL + 'Products');
   }
 
-  getProductById(id: string){
+  getProductById(id: string) {
     return this.http.get<ProductModel>(BASE_URL + 'Products' + '/' + id);
   }
 
-  addProduct(product: ProductModel){
+  addProduct(product: ProductModel) {
     return this.http.post(BASE_URL + 'Products', product);
   }
 
-  deleteProduct(id: string){
+  deleteProduct(id: string) {
     return this.http.delete(BASE_URL + 'Products' + '/' + id);
   }
 
-  updateProduct(product: ProductModel){
+  updateProduct(product: ProductModel) {
     return this.http.put(BASE_URL + 'Products' + '/' + product._id, product);
   }
 }

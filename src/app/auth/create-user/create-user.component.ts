@@ -1,27 +1,38 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
+import { NgForm } from '@angular/forms';
+import { AuthData } from '../auth/auth.model';
 
 @Component({
   selector: 'app-create-user',
   templateUrl: './create-user.component.html',
   styleUrls: ['./create-user.component.css']
 })
-export class CreateUserComponent implements OnInit {
+export class CreateUserComponent implements OnInit, OnDestroy {
 
   isloading = false;
   valid = 0;
   private authStatusSubs: Subscription;
   maxDate: any;
+  userData: AuthData;
 
   constructor(public authService: AuthService) { }
 
   onSignup(form: NgForm) {
     this.valid = 1;
+
     if (form.invalid) {
       return;
     }
     this.isloading = true;
-    this.authService.createUser(form.value.email, form.value.password,
-       form.value.firstname, form.value.lastname, form.value.birthday );
+    this.userData = { email: form.value.email, password: form.value.password,
+       firstName: form.value.firstname, lastName: form.value.lastname, isadmin: form.value.userRole };
+
+    this.authService.createUser(this.userData);
+  }
+  u(u: any) {
+    throw new Error('Method not implemented.');
   }
 
   ngOnInit() {

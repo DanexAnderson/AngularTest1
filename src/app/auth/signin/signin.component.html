@@ -1,3 +1,38 @@
-<p>
-  signin works!
-</p>
+<br>
+<div class='container mt-5'>
+
+<h2 class='text-info text-center mb-4'>Login</h2>
+
+    <form (submit) = "onLogin(loginForm)" *ngIf='!isloading' #loginForm='ngForm'>
+  <mat-card class='border col-12 col-lg-8 container-fluid shadow'>
+
+      <mat-form-field class='w-100'>
+        <input matInput  placeholder="Email" name='email' ngModel
+        type='email'class='bg-light p-2' #emailInput="ngModel" required email>
+        <mat-error *ngIf="emailInput.invalid && [valid]==1">Please Enter Valid Email</mat-error>
+      </mat-form-field>
+<br><br>
+
+<mat-form-field class='w-100'>
+
+    <input matInput type='password' ngModel name='password' required
+     placeholder="Password" class='bg-light p-2 ' #passwordInput ="ngModel"
+       />
+      <mat-error *ngIf="passwordInput.invalid && [valid]==1">Please Enter a Valid Password</mat-error>
+    </mat-form-field>
+
+
+  <button  mat-raised-button *ngIf='!isloading' class='ml-1 mt-3 pl-2 pr-2 bg-info text-white' type='submit'>
+    Login</button>
+
+
+    </mat-card>
+    <!-- <mat-spinner *ngIf='isloading'></mat-spinner> -->
+    <div class="d-flex justify-content-center mt-5">
+      <mat-spinner  *ngIf='( isloading$ | async )'></mat-spinner></div>
+
+</form>
+<br><br>
+
+</div>
+

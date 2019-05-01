@@ -57,9 +57,9 @@
       <mat-form-field class='mb-4'>
 
         <mat-label><i>User or Administrator</i></mat-label>
-        <select matNativeControl required>
-          <option value="user"> User</option>
-          <option value="admin"> Administrator</option>
+        <select matNativeControl ngModel name="userRole" required>
+          <option value=false> User</option>
+          <option value=true> Administrator</option>
          </select>
       </mat-form-field>
 
