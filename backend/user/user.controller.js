@@ -56,11 +56,11 @@ exports.userSignin = (req, res, next) => {
          {expiresIn: '1h'});  // suggest the duration of the active session
 
       res.status(200).json({
-        token: token,
+        jwt: token,
         expiresIn: 3600,
         userId: fetchedUser._id,
-        names: { firstname: fetchedUser.firstname,
-          lastname: fetchedUser.lastname, birthday: fetchedUser.birthday }
+        firstname: fetchedUser.firstname,
+        isadmin: fetchedUser.isadmin
       });
 
   }).catch(err => {

@@ -1,3 +1,79 @@
-<p>
-  create-user works!
-</p>
+
+<div class='container mt-5'>
+
+  <h2 class='text-primary text-center mb-4'>Create New User</h2>
+
+      <form (submit) = "onSignup(signupForm)" *ngIf='!isloading' #signupForm='ngForm'>
+
+    <mat-card class='border col-12 col-lg-8 container-fluid shadow'>
+
+      <!--------------------------------- First Name Field ---------------------->
+        <mat-form-field class='w-100'>
+
+            <input matInput  placeholder="First Name" name='firstname' ngModel
+            type='text'class='bg-light p-2' #fnameInput="ngModel" required>
+            <mat-error *ngIf="fnameInput.invalid && [valid]==1">Please enter your first name</mat-error>
+
+        </mat-form-field>
+
+        <!--------------------------------- Last Name Field ---------------------->
+
+        <mat-form-field class='w-100'>
+
+            <input matInput  placeholder="Last Name" name='lastname' ngModel
+            type='text'class='bg-light p-2' #lnameInput="ngModel" required>
+            <mat-error *ngIf="lnameInput.invalid && [valid]==1">Please enter your last name</mat-error>
+
+        </mat-form-field>
+
+        <!--------------------------------- Email Field ---------------------->
+
+      <mat-form-field class='w-100'>
+
+          <input matInput  placeholder="Email" name='email' ngModel
+          type='email'class='bg-light p-2' #emailInput="ngModel" required email>
+          <mat-error *ngIf="emailInput.invalid && [valid]==1">Please Enter a Valid Email</mat-error>
+
+      </mat-form-field>
+  <br><br>
+
+      <!--------------------------------- Password Field ---------------------->
+
+    <mat-form-field class='w-100' hintLabel = "Should be at Least 6 characters Long">
+
+      <input matInput type='password' ngModel name='password' required
+       placeholder="Password" class='bg-light p-2 ' #passwordInput ="ngModel"
+         minlength="6" />
+         <mat-hint align ='end'>{{ passwordInput.value?.length}} of 6</mat-hint>
+        <mat-error *ngIf="passwordInput.invalid && [valid]==1">Please Enter a Valid Password</mat-error>
+    </mat-form-field>
+
+
+  <br><br>
+
+    <!--------------------------------- User Role Selection Field ---------------------->
+
+  <p>Select User Role</p>
+      <mat-form-field class='mb-4'>
+
+        <mat-label><i>User or Administrator</i></mat-label>
+        <select matNativeControl required>
+          <option value="user"> User</option>
+          <option value="admin"> Administrator</option>
+         </select>
+      </mat-form-field>
+
+<br/>
+
+
+
+    <button *ngIf='!isloading' [disabled] ="signupForm.invalid" class='mt-3 pl-2 pr-2 mt-2' mat-raised-button color='accent' type='submit'>Signup</button>
+
+  </mat-card>
+
+      <mat-spinner *ngIf='isloading'></mat-spinner>
+
+  </form>
+  <br><br>
+
+  </div>
