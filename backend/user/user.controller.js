@@ -99,3 +99,44 @@ exports.updateUser = (req, res)=>{
   });
 
 }
+
+exports.getUsers = (req, res) => {
+
+   const postQuery = User.find().sort({ _id: -1 });
+   let fetchedUsers;
+
+  postQuery.then(documents => {
+     fetchedUsers = documents;
+       res.status(200).json({users: fetchedUsers});
+  }).catch(error =>{
+   res.status(500).json({
+     message: "Fetching Post Failed"
+   })
+  })
+
+
+  }
+
+
+
+exports.deleteUser = (req, res) => {
+
+
+  Post.deleteOne({_id: req.params.id, isadmin: req.body.isadmin }).then(result => {
+
+    if(result.n > 0){
+
+      res.status(200).json({ message: "User deleted! "});
+    } else {
+      res.status(401).json({ message: "Not Authorized"})
+    }
+
+  }).catch(error =>{
+    console.log(error);
+    res.status(500).json({
+      message: "Failed to Delete User"
+    })
+  })
+
+}
+

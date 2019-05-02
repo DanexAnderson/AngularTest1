@@ -12,7 +12,9 @@ router.post('/signin', UserController.userSignin);
 
 router.put('/updateuser/:id',checkAuth , UserController.updateUser);
 
+router.get('/getusers', UserController.getUsers);
 
+router.delete('/deleteuser', UserController.deleteUser);
 
 
 module.exports = router;

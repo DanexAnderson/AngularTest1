@@ -1,0 +1,35 @@
+<div class="container">
+
+    <div class="container col-lg-8 pt-2 mt-5">
+
+        <!-- <mat-spinner *ngIf='isloading'></mat-spinner> -->
+        <div multi='true' *ngIf='users.length > 0 && !isloading'>
+
+        <mat-expansion-panel expanded *ngFor='let user of users' class="card">
+          <mat-expansion-panel-header class='card-title bg-light text-capitalize'>
+            {{user.firstName}}
+          </mat-expansion-panel-header>
+          <ng-template matExpansionPanelContent>
+
+        <mat-panel-description>
+
+          <p class='card-body bgcard text-dark'> {{user.email}} </p>
+
+        </mat-panel-description>
+        </ng-template>
+
+        <mat-action-row *ngIf='userIsAuth && userId == user.creator' class='py-0 pb-3 border-0'>
+              <a mat-stroked-button color='primary' class='mr-2 ' [routerLink]="['/edit', user.userId]"><b>Edit</b></a>
+              <button mat-stroked-button color='warn' class='mr-1 ' (click)="onDelete(user.userId)"><b>Delete</b></button>
+            </mat-action-row>
+
+        </mat-expansion-panel>
+
+      </div>
+
+          <br>
+        <h3><p *ngIf="users.length <= 0"> No User   </p> </h3>
+
+        </div>
+
+</div>

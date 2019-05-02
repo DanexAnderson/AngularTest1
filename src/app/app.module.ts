@@ -15,6 +15,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AuthInterceptor } from './auth/auth/auth-interceptor';
 import { HeaderComponent } from './header/header.component';
+// import { UserListComponent } from './auth/user-list/user-list.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { HeaderComponent } from './header/header.component';
     AddProductComponent,
     EditProductComponent,
     HeaderComponent,
+   // UserListComponent,
    // SigninComponent,
    // CreateUserComponent
   ],

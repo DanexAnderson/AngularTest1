@@ -22,7 +22,7 @@
             </a>
         </li>
         <li class="nav-item ml-3">
-            <a class="nav-link"routerLink='/' >
+            <a class="nav-link"routerLink='/auth/userlist' >
               <button  class="btn btn-secondary text-white py-0">All Users</button></a>
           </li>
 
@@ -37,7 +37,7 @@
       <ul class=" navbar-nav mr-5">
       <li class="nav-item ml-3">
 
-          <h5 class="text-white">Hi {{firstname}}</h5>
+          <h5 *ngIf='userIsAuth' class="text-white">Hi {{firstname}}</h5>
         </li>
 
         <li class="nav-item ml-3">

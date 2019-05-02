@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
+import { map } from 'rxjs/operators';
 
 const BASE_URL = environment.url;
 
@@ -17,10 +18,12 @@ export class AuthService {
   private tokenTimer: any;
   private userId: string;
   private jwt = '';
+  users: any = [];
 
   private isadmin = false;
   private authStatusLister = new Subject<boolean>();
   private namesListner = new Subject<string>();
+  private usersUpdated = new Subject<{users: any[]}>();
   fname = '';
 
 
@@ -97,7 +100,7 @@ export class AuthService {
         this.authStatusLister.next(true);
         const now = new Date();
         const expirationDate = new Date (now .getTime() + expiresInDuration * 1000);
-        this.saveAuthData(response.jwt, expirationDate, this.userId, this.fname);
+        this.saveAuthData(response.jwt, expirationDate, this.userId, this.fname, this.isadmin ? 'true' : 'false');
 
          this.router.navigate(['/']);
 
@@ -112,6 +115,39 @@ export class AuthService {
 
   getUserId() {
     return this.userId;
+  }
+
+  getUsers() {
+
+    this.http.get<{userId: string, firstName: string, lastName: string, email: string, isadmin: boolean}>
+    ( BASE_URL + 'getusers')
+    .pipe(map((userData) => {
+      return { users: userData.users.map(user => {
+        return {
+          firstName: user.firstname,
+          lastName: user.lastname,
+          userId: user._id,
+          email: user.email,
+          isadmin: user.isadmin
+        };
+      })};
+    } ))
+    .subscribe((transformPostData) => {
+      // console.log(transformPostData);
+      this.users = transformPostData.users; // Add new post to the Post Array
+      this.usersUpdated.next({users: [...this.users]}); // update the list of post array event
+
+    });
+
+  }
+
+  getUsersUpdated() {
+    return this.usersUpdated.asObservable(); // return private variable post event array
+  }
+
+  deleteUser(userId: string) {
+    const user = {userId: userId, isadmin: this.isadmin };
+    return this.http.delete(BASE_URL + 'deleteuser/' + user);
   }
 
   autoAuthUser() {
@@ -129,6 +165,7 @@ export class AuthService {
       this.setAuthTimer(expiresIn / 1000);
       this.authStatusLister.next(true);
       this.fname = authInfo.fname;
+      this.isadmin = authInfo.isadmin === 'true' ? true : false; // string to boolean
       this.namesListner.next(this.fname);
 
     }
@@ -146,20 +183,22 @@ export class AuthService {
     const expirationDate = localStorage.getItem('expiration');
     const userId = localStorage.getItem('userId');
     const fname = localStorage.getItem('fname');
+    const isadmin = localStorage.getItem('isadmin');
     if ( !token || !expirationDate) {
 
       return;
     }
 
-    return { token: token, expirationDate: new Date(expirationDate), userId: userId, fname: fname };
+    return { token: token, expirationDate: new Date(expirationDate), userId: userId, fname: fname, isadmin: isadmin };
   }
 
-  private saveAuthData(token: string, expirationDate: Date, userId: string, fname: string) {
+  private saveAuthData(token: string, expirationDate: Date, userId: string, fname: string, isadmin: string) {
 
     localStorage.setItem('token', token);
     localStorage.setItem('expiration', expirationDate.toISOString());
     localStorage.setItem('userId', userId);
     localStorage.setItem('fname', fname);
+    localStorage.setItem('isadmin', isadmin);
   }
 
   private clearAuthData() {
@@ -168,5 +207,6 @@ export class AuthService {
     localStorage.removeItem('expiration');
     localStorage.removeItem('userId');
     localStorage.removeItem('fname');
+    localStorage.removeItem('isadmin');
   }
 }
