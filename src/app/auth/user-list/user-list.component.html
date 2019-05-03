@@ -1,35 +1,59 @@
-<div class="container">
 
-    <div class="container col-lg-8 pt-2 mt-5">
 
-        <!-- <mat-spinner *ngIf='isloading'></mat-spinner> -->
-        <div multi='true' *ngIf='users.length > 0 && !isloading'>
+    <div class="container col-lg-10 pt-2 mt-5">
 
-        <mat-expansion-panel expanded *ngFor='let user of users' class="card">
-          <mat-expansion-panel-header class='card-title bg-light text-capitalize'>
-            {{user.firstName}}
-          </mat-expansion-panel-header>
-          <ng-template matExpansionPanelContent>
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
-        <mat-panel-description>
+        <!--- Note that these columns can be defined in any order.
+              The actual rendered columns are set as a property on the row definition" -->
 
-          <p class='card-body bgcard text-dark'> {{user.email}} </p>
+        <!-- Position Column -->
+        <ng-container matColumnDef="firstName">
+          <th mat-header-cell *matHeaderCellDef><h6> FirstName </h6></th>
+          <td mat-cell *matCellDef="let element"> {{element.firstName}} </td>
+        </ng-container>
 
-        </mat-panel-description>
-        </ng-template>
+        <!-- Name Column -->
+        <ng-container matColumnDef="lastName">
+          <th mat-header-cell *matHeaderCellDef><h6>LastName </h6> </th>
+          <td mat-cell *matCellDef="let element"> {{element.lastName}} </td>
+        </ng-container>
 
-        <mat-action-row *ngIf='userIsAuth && userId == user.creator' class='py-0 pb-3 border-0'>
-              <a mat-stroked-button color='primary' class='mr-2 ' [routerLink]="['/edit', user.userId]"><b>Edit</b></a>
-              <button mat-stroked-button color='warn' class='mr-1 ' (click)="onDelete(user.userId)"><b>Delete</b></button>
-            </mat-action-row>
+        <!-- Weight Column -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef><h6> Email </h6></th>
+          <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+        </ng-container>
 
-        </mat-expansion-panel>
+        <ng-container matColumnDef="userRole">
+          <th mat-header-cell *matHeaderCellDef><h6> User Role </h6></th>
+          <td mat-cell *matCellDef="let element"> {{element.isadmin?"Administrator":"User" }} </td>
+        </ng-container>
 
-      </div>
+        <ng-container matColumnDef="userId">
+          <th mat-header-cell *matHeaderCellDef><h6 class="float-right mr-5"> Action </h6></th>
+          <td mat-cell *matCellDef="let element" >
 
-          <br>
-        <h3><p *ngIf="users.length <= 0"> No User   </p> </h3>
+            <div class="float-right d-inline-block" (click)="getMessage()">
+              <a   [ngClass]="{'disabled btn-outline-secondary ' : !isadmin,
+                              'btn-primary' : isadmin,
+                              'nav-link mr-3 py-0 btn d-inline' : true }"
+              [routerLink]="['/auth/edituser/', element.userId]" >Edit</a>
 
-        </div>
+              <a [ngClass]="{'disabled btn-outline-secondary text-secondary' : !isadmin,
+              'btn-danger text-white' : isadmin,
+              'nav-link py-0 btn d-inline' : true }"
+              (click)="onDelete(element.userId)" >Delete </a>
+            </div> </td>
+        </ng-container>
+
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+
+
+
 
 </div>

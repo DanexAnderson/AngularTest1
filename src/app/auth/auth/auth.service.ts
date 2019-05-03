@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { AuthData } from './auth.model';
-import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { environment } from 'src/environments/environment';
+import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+import { AuthData } from './auth.model';
 
 const BASE_URL = environment.url;
 
@@ -17,7 +17,7 @@ export class AuthService {
   private isAuth = false;
   private tokenTimer: any;
   private userId: string;
-  private jwt = '';
+  private token: string;
   users: any = [];
 
   private isadmin = false;
@@ -30,7 +30,7 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) { }
 
   getToken() {
-    return this.jwt;
+    return this.token;
   }
 
   getIsAdmin() {
@@ -58,8 +58,8 @@ export class AuthService {
     return this.http.post(BASE_URL + 'createuser', user)
     .subscribe(() => {
 
-    this.loginUser(user);
-      this.router.navigate(['/']);
+    // this.loginUser(user);
+      this.router.navigate(['/auth/userlist']);
     }, error => {
       console.log(error);
       this.authStatusLister.next(false);
@@ -70,7 +70,7 @@ export class AuthService {
 
 
   logOut() {
-    this.jwt = null;
+    this.token = null;
     this.isAuth = false;
     this.namesListner.next('');
     this.authStatusLister.next(false);
@@ -82,15 +82,16 @@ export class AuthService {
 
   loginUser(user: AuthData) {
 
-    this.http.post<{jwt: string, expiresIn: number, userId: string, firstName: string, isadmin: boolean }>
+    this.http.post<{token: string, expiresIn: number, userId: string, firstName: string, isadmin: boolean }>
     (BASE_URL + 'signin', user)
     .subscribe(response => {
-       this.jwt = response.jwt;
+       const token = response.token;
+       this.token = token;
 
        this.fname = response.firstName;
        this.isadmin = response.isadmin;
 
-      if (response.jwt) {
+      if (response.token) {
         this.namesListner.next(this.fname);
         const expiresInDuration = response.expiresIn;
         this.setAuthTimer(expiresInDuration);
@@ -100,7 +101,7 @@ export class AuthService {
         this.authStatusLister.next(true);
         const now = new Date();
         const expirationDate = new Date (now .getTime() + expiresInDuration * 1000);
-        this.saveAuthData(response.jwt, expirationDate, this.userId, this.fname, this.isadmin ? 'true' : 'false');
+        this.saveAuthData(response.token, expirationDate, this.userId, this.fname, this.isadmin ? 'true' : 'false');
 
          this.router.navigate(['/']);
 
@@ -117,9 +118,14 @@ export class AuthService {
     return this.userId;
   }
 
+  // Update A User on Selection of that user
+  getuserData(id: string) {
+   return this.http.get<any>(BASE_URL + 'getuserone/' + id);
+  }
+
   getUsers() {
 
-    this.http.get<{userId: string, firstName: string, lastName: string, email: string, isadmin: boolean}>
+    this.http.get<{message: string, users: any}>
     ( BASE_URL + 'getusers')
     .pipe(map((userData) => {
       return { users: userData.users.map(user => {
@@ -132,9 +138,9 @@ export class AuthService {
         };
       })};
     } ))
-    .subscribe((transformPostData) => {
+    .subscribe((transformUserData) => {
       // console.log(transformPostData);
-      this.users = transformPostData.users; // Add new post to the Post Array
+      this.users = transformUserData.users; // Add new post to the Post Array
       this.usersUpdated.next({users: [...this.users]}); // update the list of post array event
 
     });
@@ -142,12 +148,15 @@ export class AuthService {
   }
 
   getUsersUpdated() {
-    return this.usersUpdated.asObservable(); // return private variable post event array
+    return this.usersUpdated.asObservable(); // return private variable users event array
   }
 
   deleteUser(userId: string) {
-    const user = {userId: userId, isadmin: this.isadmin };
-    return this.http.delete(BASE_URL + 'deleteuser/' + user);
+    if (this.isadmin) {         // Delete Only If the User has a role of Administrator
+
+    // const user = { user: this.userId };
+    return this.http.delete(BASE_URL + 'deleteuser/' + userId);
+    } else {  this.router.navigate(['/auth/userlist']); }
   }
 
   autoAuthUser() {
@@ -159,7 +168,7 @@ export class AuthService {
     const now = new Date();
     const expiresIn = authInfo.expirationDate.getTime() - now.getTime();
     if (expiresIn > 0) {
-      this.jwt = authInfo.token;
+      this.token = authInfo.token;
       this.isAuth = true;
       this.userId = authInfo.userId;
       this.setAuthTimer(expiresIn / 1000);
@@ -169,6 +178,19 @@ export class AuthService {
       this.namesListner.next(this.fname);
 
     }
+  }
+
+  updateUser(id: string, data: AuthData) {
+    let postData: any ;
+
+      postData = { _id: id, firstname: data.firstName, lastname: data.lastName,
+         email: data.email, password: data.password, isadmin: data.isadmin, userId: this.userId };
+
+       this.http.put<{message: string, result: any}>(BASE_URL + 'updateuser/' + id, postData)
+    .subscribe((response) => {
+
+     this.router.navigate(['/auth/userlist']);
+  });
   }
 
   private setAuthTimer(duration: number) {

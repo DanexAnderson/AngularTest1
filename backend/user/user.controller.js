@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 
 const User = require('./user.model');
 
+// Create User
 exports.createUser = (req, res)=>{
 
   bcrypt.hash(req.body.password, 10).then(hash =>{
@@ -29,6 +30,7 @@ exports.createUser = (req, res)=>{
 
 }
 
+// User Sign in
 exports.userSignin = (req, res, next) => {
 
   let fetchedUser;
@@ -53,11 +55,11 @@ exports.userSignin = (req, res, next) => {
     }
       const token = jwt.sign({        // JWTwebToken to encrypt tokens sent to the client
         email: fetchedUser.email, userId: fetchedUser._id },
-         'secret_this_should_be_longer',
+        'this_is_top_secret_like_KFC_recipe',
          {expiresIn: '1h'});  // suggest the duration of the active session
 
       res.status(200).json({
-        jwt: token,
+        token: token,
         expiresIn: 3600,
         userId: fetchedUser._id,
         firstName: fetchedUser.firstname,
@@ -76,9 +78,15 @@ exports.userSignin = (req, res, next) => {
 
 exports.updateUser = (req, res)=>{
 
+
+
+  User.findById(req.body.userId).then(user =>{  // Check if the User Requesting Update is an Administrator
+    if (user.isadmin){
+
   bcrypt.hash(req.body.password, 10).then(hash =>{
 
     const user = new User({
+    _id : req.body._id,
     firstname: req.body.firstname,
     lastname: req.body.lastname,
     isadmin: req.body.isadmin,
@@ -86,7 +94,7 @@ exports.updateUser = (req, res)=>{
     password: hash
   });
 
-    User.updateOne({_id: req.params._id, isadmin: true }, user).then(result => {
+    User.updateOne({_id: req.params.id }, user).then(result => {
       res.status(201).json({
         message: 'User Successfully Updated !',
         result: result
@@ -98,11 +106,15 @@ exports.updateUser = (req, res)=>{
     });
   });
 
+  } else { res.status(401).json({message: 'You have no Admin Rights'}); }
+  });
+
 }
 
+// Get All Users in Ascending order
 exports.getUsers = (req, res) => {
 
-   const postQuery = User.find().sort({ _id: -1 });
+   const postQuery = User.find().sort({ firstname: 1 });
    let fetchedUsers;
 
   postQuery.then(documents => {
@@ -110,19 +122,19 @@ exports.getUsers = (req, res) => {
        res.status(200).json({users: fetchedUsers});
   }).catch(error =>{
    res.status(500).json({
-     message: "Fetching Post Failed"
+     message: "Fetching User Failed"
    })
   })
 
 
   }
 
-
+// Delete User
 
 exports.deleteUser = (req, res) => {
 
 
-  Post.deleteOne({_id: req.params.id, isadmin: req.body.isadmin }).then(result => {
+  User.deleteOne({_id: req.params.id }).then(result => {
 
     if(result.n > 0){
 
@@ -136,7 +148,22 @@ exports.deleteUser = (req, res) => {
     res.status(500).json({
       message: "Failed to Delete User"
     })
-  })
+  });
 
 }
 
+// Get A Single User
+
+exports.getuserOne = (req, res) => {
+  User.findById(req.params.id).then(user => {
+    if (user){
+      res.status(200).json(user);
+    }else{
+      res.status(404).json({message: "User not Found !!"});
+    }
+  }).catch(error =>{
+    res.status(500).json({
+      message: "Fetching request User Failed"
+    })
+  })
+}

@@ -43,7 +43,7 @@
         <li class="nav-item ml-3">
             <div *ngIf='!userIsAuth'>
       <a routerLink='/auth/signin' class="text-decoration-none  ">
-        <h4 class="text-white ml-3">Login</h4></a>
+        <h5 class="text-white ml-3">Login</h5></a>
             </div>
         <div *ngIf='userIsAuth'>
         <button routerLink='/auth/signin' class="btn btn-outline-secondary py-0" (click)="onLogout()">
