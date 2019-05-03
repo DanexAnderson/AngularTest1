@@ -2,6 +2,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path = require('path');
+
+
 
 const app = express();
 
@@ -18,7 +21,7 @@ app.use(cors());
     next();
   }); */
 
-
+app.use(express.static(path.join(__dirname,'public'))); // create link to public folder
 
 // Configuring the database
 const config = require('./config.js');
@@ -29,6 +32,21 @@ app.use('/', user);
 
 mongoose.Promise = global.Promise;
 
+app.enable('trust proxy'); // to  enable https for req.protocol
+
+if (process.env.NODE_ENV === 'production') {
+
+app.use(function(req, res, next) { // force https request
+  if (req.secure){
+    return next();
+  }
+  res.redirect("https://" + req.headers.host + req.url);
+});
+
+}
+
+
+
 // Connecting to the database
 mongoose.connect(config.url, {
     useNewUrlParser: true
@@ -38,6 +56,10 @@ mongoose.connect(config.url, {
     console.log('Could not connect to the database. Exiting now...', err);
     process.exit();
 });
+
+app.use((req, res, next) => {
+  res.sendFile(path.join(__dirname,'public', 'index.html'))  // redirect all miscellaneous request to angular
+} );
 
 // default route
 app.get('/', (req, res) => {

@@ -5,7 +5,10 @@ const User = require('./user/user.model');
 exports.create = (req, res) => {
 
 // Check if the User Requesting Create Product is an Administrator
-  User.findById(req.userData.userId).then(user =>{
+
+
+User.findById(req.userData.userId).then( user =>{
+
     if (user.isadmin){
 
 

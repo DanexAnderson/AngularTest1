@@ -3,7 +3,7 @@ module.exports = (app) => {
     const checkAuth = require('./user/auth-check');
 
     // Create a new Product
-    app.post('/products', products.create);
+    app.post('/products', checkAuth, products.create);
 
     // Retrieve all Products
     app.get('/products', products.findAll);
