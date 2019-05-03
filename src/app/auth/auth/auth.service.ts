@@ -1,3 +1,6 @@
+// Creator:  Dane Anderson
+// Location: Kingston, Jamaica
+
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
@@ -33,18 +36,22 @@ export class AuthService {
     return this.token;
   }
 
+  // User Role identifier
   getIsAdmin() {
     return this.isadmin;
   }
 
+  // get first Name of Login User
   getNames() {
     return this.fname;
   }
 
+  // Subscription to User's first name
    getNamesSubs() {
     return this.namesListner.asObservable();
   }
 
+   // check if User is Authenticated
   getIsAuth() {
     return this.isAuth;
   }
@@ -195,6 +202,7 @@ export class AuthService {
   });
   }
 
+  // User Session Timer
   private setAuthTimer(duration: number) {
    // console.log('Seting timer: ' + duration );
     this.tokenTimer = setTimeout(() => {
@@ -202,6 +210,7 @@ export class AuthService {
     }, duration * 1000);
   }
 
+// Store Data from Browser LocalStorage
   private getAuthData() {
     const token = localStorage.getItem('token');
     const expirationDate = localStorage.getItem('expiration');
@@ -216,6 +225,7 @@ export class AuthService {
     return { token: token, expirationDate: new Date(expirationDate), userId: userId, fname: fname, isadmin: isadmin };
   }
 
+ // Save User Session in browser LocalStorage
   private saveAuthData(token: string, expirationDate: Date, userId: string, fname: string, isadmin: string) {
 
     localStorage.setItem('token', token);

@@ -1,3 +1,6 @@
+// Creator:  Dane Anderson
+// Location: Kingston, Jamaica
+
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
@@ -29,7 +32,7 @@ export class CreateUserComponent implements OnInit, OnDestroy {
 
   constructor(public authService: AuthService, public route: ActivatedRoute) { }
 
-  onPost() {
+  onPost() {  // Populate form with Input Data
     this.valid = 1;
     if (this.form.invalid ) { return; }
     this.isloading = true;
@@ -55,6 +58,7 @@ export class CreateUserComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
+    // Check if User is Authenticated
     this.authStatusSubs = this.authService.getAuthStatus().subscribe(
       authStatus => {
         this.isloading = false;
@@ -101,7 +105,7 @@ export class CreateUserComponent implements OnInit, OnDestroy {
               isadmin: userData.isadmin,
               password: userData.password
              };
-
+                // Populate Form with data retrieved from database
           this.form.setValue({
             'firstname': this.userData.firstName,
             'lastname': this.userData.lastName,

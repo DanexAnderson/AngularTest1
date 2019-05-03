@@ -1,3 +1,6 @@
+// Creator:  Dane Anderson
+// Location: Kingston, Jamaica
+
 import { Component, Output, OnInit } from '@angular/core';
 import { AuthService } from './auth/auth/auth.service';
 import { Router } from '@angular/router';

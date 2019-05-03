@@ -1,3 +1,6 @@
+// Creator:  Dane Anderson
+// Location: Kingston, Jamaica
+
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
@@ -47,3 +50,5 @@ export class SigninComponent implements OnInit, OnDestroy {
 
 
 }
+// Creator:  Dane Anderson
+// Location: Kingston, Jamaica

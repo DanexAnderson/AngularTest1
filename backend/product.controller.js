@@ -3,6 +3,12 @@ const User = require('./user/user.model');
 
 //Create new Product
 exports.create = (req, res) => {
+
+// Check if the User Requesting Create Product is an Administrator
+  User.findById(req.userData.userId).then(user =>{
+    if (user.isadmin){
+
+
     // Request validation
     if(!req.body) {
 
@@ -28,6 +34,10 @@ exports.create = (req, res) => {
             message: err.message || "Something wrong while creating the product."
         });
     });
+
+  } else { res.status(401).json({message: 'You must be an Administrator to Create a Product'}); }
+});
+
 };
 
 // Retrieve all products from the database.
@@ -73,7 +83,8 @@ exports.update = (req, res) => {
         });
     }
 
-    User.findById(req.userData.userId).then(user =>{  // Check if the User Requesting Update is an Administrator
+// Check if the User Requesting Update is an Administrator
+    User.findById(req.userData.userId).then(user =>{
       if (user.isadmin){
 
     // Find and update product with the request body
@@ -101,7 +112,7 @@ exports.update = (req, res) => {
         });
     });
 
-  } else { res.status(401).json({message: 'You have no Admin Rights'}); }
+  } else { res.status(401).json({message: 'You must be an Administrator to Update Products'}); }
 });
 
 };
@@ -131,6 +142,6 @@ exports.delete = (req, res) => {
         });
     });
 
-  } else { res.status(401).json({message: 'You have no Admin Rights'}); }
+  } else { res.status(401).json({message: 'You have no Administrator Rights'}); }
 });
 };

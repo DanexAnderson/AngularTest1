@@ -1,3 +1,6 @@
+// Creator:  Dane Anderson
+// Location: Kingston, Jamaica
+
 const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {

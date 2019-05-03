@@ -1,0 +1,10 @@
+
+This Project Has:
+
+1) Password Encryption
+2) Authenication Middleware: Server Side Validation
+3) Authenication Interceptors: ensure User Validation
+4) Authenication Guards: Protection against URL injection
+5) Session
+6) Error Interceptors
+7) Confirmation Dialog: Mat-Dialog

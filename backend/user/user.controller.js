@@ -1,12 +1,21 @@
+// Creator:  Dane Anderson
+// Location: Kingston, Jamaica
+
+
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const User = require('./user.model');
 
+
+
 // Create User
 exports.createUser = (req, res)=>{
 
-  bcrypt.hash(req.body.password, 10).then(hash =>{
+  User.findById(req.userData.userId).then(user =>{  // Check if the User Requesting Create is an Administrator
+  if (user.isadmin){
+
+  bcrypt.hash(req.body.password, 10).then(hash =>{  // Password Encryption
 
     const user = new User({
     firstname: req.body.firstName,
@@ -27,6 +36,9 @@ exports.createUser = (req, res)=>{
       });
     });
   });
+
+} else { res.status(401).json({message: 'You must have Admin Right to create New Users'}); }
+});
 
 }
 
@@ -50,7 +62,7 @@ exports.userSignin = (req, res, next) => {
     if (!result){
 
       return res.status(401).json({
-        message: "Auth Failed not Password"
+        message: "Authentication Failed, Invalid Password"
       });
     }
       const token = jwt.sign({        // JWTwebToken to encrypt tokens sent to the client
@@ -106,7 +118,7 @@ exports.updateUser = (req, res)=>{
     });
   });
 
-  } else { res.status(401).json({message: 'You have no Admin Rights'}); }
+  } else { res.status(401).json({message: 'You must be Administrator to Update Users'}); }
   });
 
 }
