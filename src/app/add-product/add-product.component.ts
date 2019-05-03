@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators } from "@angular/forms";
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ProductService } from '../product.service';
-import { first } from "rxjs/operators";
-import { Router } from "@angular/router";
+import { first } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-product',
@@ -26,10 +26,10 @@ export class AddProductComponent implements OnInit {
     });
   }
 
-  onSubmit(){
+  onSubmit() {
     this.submitted = true;
-    
-    if(this.addForm.valid){
+
+    if (this.addForm.valid) {
       this.productService.addProduct(this.addForm.value)
       .subscribe( data => {
         console.log(data);

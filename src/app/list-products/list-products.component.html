@@ -1,7 +1,7 @@
 <div class="container col-md-12">
 
   <div>
-        <button (click)="addProduct()" class="btn btn-outline-info"><b>Add Product</b></button>
+        <button *ngIf="isadmin" (click)="addProduct()" class="btn btn-outline-info"><b>Add Product</b></button>
       </div>
   <h2 class="text-center pb-2 text-info">All Products</h2>
   <div class="table-responsive table-container">
@@ -23,9 +23,18 @@
           <td>{{product.price | currency : "USD" : true}}</td>
           <td>{{product.company}}</td>
 
-          <td>
-            <button (click)="deleteProduct(product)" class="btn btn-info"> Delete</button>
-            <button (click)="updateProduct(product)" style="margin-left: 20px;" class="btn btn-info"> Edit</button>
+          <td  (click)="getMessage()">
+            <button (click)="deleteProduct(product)"
+            [ngClass]="{'disabled btn-outline-secondary ' : !isadmin,
+                              'btn-danger' : isadmin,
+                              'nav-link mr-3 py-0 btn d-inline' : true }"
+            > Delete</button>
+
+            <button (click)="updateProduct(product)" style="margin-left: 20px;"
+            [ngClass]="{'disabled btn-outline-secondary ' : !isadmin,
+                              'btn-info' : isadmin,
+                              'nav-link mr-3 py-0 btn d-inline' : true }"
+            > Edit</button>
           </td>
         </tr>
       </tbody>

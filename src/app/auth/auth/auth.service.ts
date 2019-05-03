@@ -72,12 +72,14 @@ export class AuthService {
   logOut() {
     this.token = null;
     this.isAuth = false;
+    this.isadmin = false;
     this.namesListner.next('');
     this.authStatusLister.next(false);
     clearTimeout(this.tokenTimer);
     this.clearAuthData();
     this.userId = null;
-    this.router.navigate(['/']);
+    this.router.navigate(['/auth/signin']);
+
   }
 
   loginUser(user: AuthData) {

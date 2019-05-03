@@ -10,13 +10,13 @@ router.post('/createuser', UserController.createUser);
 
 router.post('/signin',   UserController.userSignin); //
 
-router.put('/updateuser/:id', UserController.updateUser);
+router.put('/updateuser/:id', checkAuth, UserController.updateUser);
 
 router.get('/getusers', checkAuth, UserController.getUsers);
 
-router.delete('/deleteuser/:id', UserController.deleteUser);
+router.delete('/deleteuser/:id', checkAuth, UserController.deleteUser);
 
-router.get('/getuserone/:id', UserController.getuserOne);
+router.get('/getuserone/:id', checkAuth, UserController.getuserOne);
 
 
 module.exports = router;

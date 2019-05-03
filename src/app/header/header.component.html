@@ -1,7 +1,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-info fixed-top">
 
-        <a routerLink='/' class="text-decoration-none "><h3 class="text-white text-center">
+        <a routerLink='/' class="text-decoration-none "><h3 class="text-white text-center txt2">
             {{ title }}!
           </h3>
         </a>
@@ -18,18 +18,18 @@
       <ul class="navbar-nav mr-auto">
         <li class="nav-item ml-3">
           <a class="nav-link" routerLink='/auth/createuser'>
-              <button  class="btn btn-danger text-white py-0 ">New User</button>
+              <button  class="btn btn-danger text-white py-0 btn2">New User</button>
             </a>
         </li>
         <li class="nav-item ml-3">
             <a class="nav-link"routerLink='/auth/userlist' >
-              <button  class="btn btn-secondary text-white py-0">All Users</button></a>
+              <button  class="btn btn-primary text-white py-0 btn2">All Users</button></a>
           </li>
 
 
         <li class="nav-item ml-3">
           <a class="nav-link"routerLink='/' >
-            <button  class="btn btn-success text-white py-0">All Products</button></a>
+            <button  class="btn btn-success text-white py-0 btn2">All Products</button></a>
         </li>
 
       </ul>
@@ -37,17 +37,17 @@
       <ul class=" navbar-nav mr-5">
       <li class="nav-item ml-3">
 
-          <h5 *ngIf='userIsAuth' class="text-white">Hi {{firstname}}</h5>
+          <h5 *ngIf='userIsAuth' class="text-white txt2">Hi {{firstname}}</h5>
         </li>
 
         <li class="nav-item ml-3">
             <div *ngIf='!userIsAuth'>
       <a routerLink='/auth/signin' class="text-decoration-none  ">
-        <h5 class="text-white ml-3">Login</h5></a>
+        <h5 class="text-white ml-3 txt2">Login</h5></a>
             </div>
         <div *ngIf='userIsAuth'>
-        <button routerLink='/auth/signin' class="btn btn-outline-secondary py-0" (click)="onLogout()">
-          <b class="text-white">Logout</b> </button>
+        <button routerLink='/auth/signin' class="btn btn-primary py-0" (click)="onLogout()">
+          <b class="text-white txt2">Logout</b> </button>
       </div>
 
 

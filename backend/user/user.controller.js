@@ -133,6 +133,10 @@ exports.getUsers = (req, res) => {
 
 exports.deleteUser = (req, res) => {
 
+console.log(req.userData.userId);
+
+User.findById(req.userData.userId).then(user =>{  // Check if the User Requesting Delete is an Administrator
+  if (user.isadmin){
 
   User.deleteOne({_id: req.params.id }).then(result => {
 
@@ -149,6 +153,9 @@ exports.deleteUser = (req, res) => {
       message: "Failed to Delete User"
     })
   });
+
+} else { res.status(401).json({message: 'You have no Admin Rights'}); }
+});
 
 }
 

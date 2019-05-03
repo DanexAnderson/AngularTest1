@@ -13,7 +13,7 @@ export class ProductService {
 
   constructor(private http: HttpClient) { }
 
-
+  private userId = '';
 
   getAllProducts() {
     return this.http.get<ProductModel[]>(BASE_URL + 'Products');

@@ -1,10 +1,11 @@
 const Product = require('./product.model.js');
+const User = require('./user/user.model');
 
 //Create new Product
 exports.create = (req, res) => {
     // Request validation
     if(!req.body) {
-        
+
         return res.status(400).send({
             message: "Product content can not be empty"
         });
@@ -12,7 +13,7 @@ exports.create = (req, res) => {
 
     // Create a Product
     const product = new Product({
-        title: req.body.title || "No product title", 
+        title: req.body.title || "No product title",
         description: req.body.description,
         price: req.body.price,
         company: req.body.company
@@ -48,14 +49,14 @@ exports.findOne = (req, res) => {
         if(!product) {
             return res.status(404).send({
                 message: "Product not found with id " + req.params.productId
-            });            
+            });
         }
         res.send(product);
     }).catch(err => {
         if(err.kind === 'ObjectId') {
             return res.status(404).send({
                 message: "Product not found with id " + req.params.productId
-            });                
+            });
         }
         return res.status(500).send({
             message: "Something wrong retrieving product with id " + req.params.productId
@@ -72,9 +73,12 @@ exports.update = (req, res) => {
         });
     }
 
+    User.findById(req.userData.userId).then(user =>{  // Check if the User Requesting Update is an Administrator
+      if (user.isadmin){
+
     // Find and update product with the request body
     Product.findByIdAndUpdate(req.params.productId, {
-        title: req.body.title || "No product title", 
+        title: req.body.title || "No product title",
         description: req.body.description,
         price: req.body.price,
         company: req.body.company
@@ -90,16 +94,24 @@ exports.update = (req, res) => {
         if(err.kind === 'ObjectId') {
             return res.status(404).send({
                 message: "Product not found with id " + req.params.productId
-            });                
+            });
         }
         return res.status(500).send({
             message: "Something wrong updating note with id " + req.params.productId
         });
     });
+
+  } else { res.status(401).json({message: 'You have no Admin Rights'}); }
+});
+
 };
 
 // Delete a note with the specified noteId in the request
 exports.delete = (req, res) => {
+
+  User.findById(req.userData.userId).then(user =>{  // Check if the User Requesting Delete is an Administrator
+    if (user.isadmin){
+
     Product.findByIdAndRemove(req.params.productId)
     .then(product => {
         if(!product) {
@@ -112,10 +124,13 @@ exports.delete = (req, res) => {
         if(err.kind === 'ObjectId' || err.name === 'NotFound') {
             return res.status(404).send({
                 message: "Product not found with id " + req.params.productId
-            });                
+            });
         }
         return res.status(500).send({
             message: "Could not delete product with id " + req.params.productId
         });
     });
+
+  } else { res.status(401).json({message: 'You have no Admin Rights'}); }
+});
 };
